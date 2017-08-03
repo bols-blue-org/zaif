@@ -35,24 +35,26 @@ func (cl *CurrencyLog) UnmarshalJSON(value []byte) error {
 	return nil
 }
 
-func (cb *CurrencyBoad) String() string {
+func (cb CurrencyBoad) String() string {
 	return fmt.Sprintf("<%s>Ask:%.10f Bid:%.10f", cb.CurrencyPair, cb.Asks[0].Price, cb.Bids[0].Price)
 }
 
 type CurrencySet struct {
-	Main CurrencyBoad
-	Sub  CurrencyBoad
-	Btc  CurrencyBoad
+	Main *CurrencyBoad
+	Sub  *CurrencyBoad
+	Btc  *CurrencyBoad
 	Unit float64
 }
 
 func (cs *CurrencySet) PrintSimrate() {
-	var routePrice = cs.Main.Asks[0].Price * cs.Btc.Asks[0].Price * cs.Unit
-	var unitPrice = cs.Sub.Bids[0].Price * cs.Unit
-	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
-	routePrice = cs.Main.Bids[0].Price * cs.Btc.Bids[0].Price * cs.Unit
-	unitPrice = cs.Sub.Asks[0].Price * cs.Unit
-	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
+	if (cs.Main != nil) && (cs.Btc != nil) && (cs.Sub != nil) {
+		var routePrice = cs.Main.Asks[0].Price * cs.Btc.Asks[0].Price * cs.Unit
+		var unitPrice = cs.Sub.Bids[0].Price * cs.Unit
+		fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
+		routePrice = cs.Sub.Asks[0].Price * cs.Unit
+		unitPrice = cs.Main.Bids[0].Price * cs.Btc.Bids[0].Price * cs.Unit
+		fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
+	}
 }
 
 func NewCurrencyBoad(jsonStr []byte) (*CurrencyBoad, error) {
