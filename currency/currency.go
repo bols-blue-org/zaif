@@ -6,9 +6,9 @@ import (
 )
 
 type CurrencyBoad struct {
-	Asks []CurrencyLog `json:"asks"`
-	Bids []CurrencyLog `json:"bids"`
-	Trades  []TradeLog `json:"trades"`
+	Asks         []CurrencyLog `json:"asks"`
+	Bids         []CurrencyLog `json:"bids"`
+	Trades       []TradeLog    `json:"trades"`
 	CurrencyPair string        `json:"currency_pair"`
 }
 
@@ -23,16 +23,20 @@ type CurrencyLog struct {
 }
 
 func (cl *CurrencyLog) UnmarshalJSON(value []byte) error {
-        data := new([]float64)
+	data := new([]float64)
 
-        if err := json.Unmarshal(value, data); err != nil {
-                return err
-        }
+	if err := json.Unmarshal(value, data); err != nil {
+		return err
+	}
 
-    cl.Price = (*data)[0]
-    cl.Amount = (*data)[1]
+	cl.Price = (*data)[0]
+	cl.Amount = (*data)[1]
 
-    return nil
+	return nil
+}
+
+func (cb *CurrencyBoad) String() string {
+	return fmt.Sprintf("<%s>Ask:%.10f Bid:%.10f", cb.CurrencyPair, cb.Asks[0].Price, cb.Bids[0].Price)
 }
 
 type CurrencySet struct {
@@ -42,13 +46,13 @@ type CurrencySet struct {
 	Unit float64
 }
 
-func (cs *CurrencySet) PrintSimrate(){
+func (cs *CurrencySet) PrintSimrate() {
 	var routePrice = cs.Main.Asks[0].Price * cs.Btc.Asks[0].Price * cs.Unit
-	var unitPrice  = cs.Sub.Bids[0].Price * cs.Unit
-	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice - unitPrice)
+	var unitPrice = cs.Sub.Bids[0].Price * cs.Unit
+	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
 	routePrice = cs.Main.Bids[0].Price * cs.Btc.Bids[0].Price * cs.Unit
-	unitPrice  = cs.Sub.Asks[0].Price * cs.Unit
-	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice - unitPrice)
+	unitPrice = cs.Sub.Asks[0].Price * cs.Unit
+	fmt.Printf("%.2f - %.2f = win %.2f\n", routePrice, unitPrice, routePrice-unitPrice)
 }
 
 func NewCurrencyBoad(jsonStr []byte) (*CurrencyBoad, error) {
