@@ -51,7 +51,11 @@ func printBoad(data []byte) {
 
 func main() {
 	origin := "http://ws.zaif.jp/"
-	url := "wss://ws.zaif.jp:8888/stream?currency_pair=xem_btc"
+	//url := "wss://ws.zaif.jp:8888/stream?currency_pair=xem_btc"
+	//url := "wss://ws.zaif.jp:8888/stream?currency_pair=xem_jpy"
+	//url := "wss://ws.zaif.jp:8888/stream?currency_pair=btc_jpy"
+	//url := "wss://ws.zaif.jp:8888/stream?currency_pair=mona_btc"
+	url := "wss://ws.zaif.jp:8888/stream?currency_pair=mona_jpy"
 	ws, err := websocket.Dial(url, "", origin)
 	if err != nil {
 		log.Fatal(err)
@@ -61,10 +65,12 @@ func main() {
 		websocket.Message.Receive(ws, &message)
 		fmt.Printf("%s\n", message)
 	*/
-	printBoad(readBoad(ws))
-	printBoad(readBoad(ws))
-	printBoad(readBoad(ws))
-	printBoad(readBoad(ws))
-	printBoad(readBoad(ws))
-	printBoad(readBoad(ws))
+	data := readBoad(ws)
+	fmt.Printf("%s",data)
+	//printBoad(readBoad(ws))
+	//printBoad(readBoad(ws))
+	//printBoad(readBoad(ws))
+	//printBoad(readBoad(ws))
+	//printBoad(readBoad(ws))
+	//printBoad(readBoad(ws))
 }
