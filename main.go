@@ -18,21 +18,31 @@ func resevCoinBoad(url string) {
 	origin := "http://ws.zaif.jp/"
 	var data []byte
 	var monaBtc *currency.CurrencyBoad
+restart:
+	log.Println(url)
 	ws, err := websocket.Dial(url, "", origin)
 	if err != nil {
-		log.Fatal(err)
+			log.Println(err)
+		time.Sleep(1 * time.Second)
+			goto restart
 	}
 	for {
-		data = stream.ReadBoad(ws)
+		data, err = stream.ReadBoad(ws)
+		if err != nil {
+			log.Println(err)
+		time.Sleep(1 * time.Second)
+			goto restart
+		}else{
 		monaBtc, err = currency.NewCurrencyBoad(data)
 		if monaBtc != nil {
 			q <- *monaBtc
+		}
 		}
 	}
 }
 
 const (
-	pollingTime = 60
+	pollingTime = 10
 )
 
 func restCallBoad(pairName string) {

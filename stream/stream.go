@@ -3,34 +3,33 @@ package stream
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"golang.org/x/net/websocket"
 )
 
-func ReadBoad(ws *websocket.Conn) []byte {
+func ReadBoad(ws *websocket.Conn) ([]byte,error) {
 	var msg = make([]byte, 1024*4)
 	var n int
 	var err error
 	if n, err = ws.Read(msg); err != nil {
-		log.Fatal(err)
+		return nil,err
 	}
 	var readData = make([]byte, n)
 	copy(readData, msg)
 	var data []byte
 	if n == 4092 {
 		if n, err = ws.Read(msg); err != nil {
-			log.Fatal(err)
+			return nil,err
 		}
 		data = append(readData, msg[:n]...)
 	}
 	if n == 4092 {
 		if n, err = ws.Read(msg); err != nil {
-			log.Fatal(err)
+			return nil,err
 		}
 		data = append(readData, msg[:n]...)
 	}
-	return data
+	return data,nil
 }
 
 func PrintBoad(data []byte) {
